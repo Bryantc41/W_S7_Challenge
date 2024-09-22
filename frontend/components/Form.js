@@ -36,14 +36,15 @@ export default function Form() {
 const [serverSuccess, setServerSuccess] = useState('')
 const [serverFailure, setServerFailure] = useState('')
 const [enabled, setEnabled] = useState(false)
-const [errors, setErrors] = useState({fullName:"", size: ""})
+const [errors, setErrors] = useState({fullName: "", size: ""})
 const [values, setValues] = useState(initialValues)
 
 useEffect(() => {
   validationSchema.isValid(values).then((isValid) => {
     setEnabled(isValid)
   })
-}, [values.fullName, values.size])
+}, [values.fullName, values.size]);
+
 const validate = (key, value) => {
   yup
   .reach(validationSchema, key)
@@ -62,7 +63,7 @@ const handleChange = (evt) => {
   setValues({...values, [id]:value})
 }
 
-consty handleToppings = (evt) => {
+const handleToppings = (evt) => {
   const {name, checked} = evt.target
   if (checked) setValues({ ... values, toppings: [...values.toppings,
     name]})
@@ -85,7 +86,7 @@ const onSubmit = (evt) => {
 }
 
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <h2>Order Your Pizza</h2>
       {serverSuccess && <div className='success'>{serverSuccess}</div>}
       {serverFailure && <div className='failure'>{serverFailure}</div>}
@@ -95,16 +96,16 @@ const onSubmit = (evt) => {
           <label htmlFor="fullName">Full Name</label><br />
           <input placeholder="Type full name" id="fullName" type="text" 
           value = {values.fullName}
-          onChange={handleChange}
+          onChange= {handleChange}
           />
         </div>
-        {errors.fullName && <div className='error'>{errors.size}</div>}
+        {errors.fullName && <div className='error'>{errors.fullName}</div>}
       </div>
 
       <div className="input-group">
         <div>
           <label htmlFor="size">Size</label><br />
-          <select id="size">
+          <select id="size" value={values.size} onChange={handleChange}>
             <option value="">----Choose Size----</option>
             <option value="S">Small</option>
             <option value="M">Medium</option>
@@ -130,7 +131,8 @@ const onSubmit = (evt) => {
         }
       </div>
       {/* 👇 Make sure the submit stays disabled until the form validates! */}
-      <input type="submit" />
+      <input type="submit" disabled={!enabled} 
+      />
     </form>
   )
 }
